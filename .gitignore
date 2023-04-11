@@ -1,0 +1,9 @@
+# .terraform directory
+.terraform/
+
+# Terraform state
+*tfstate*
+
+# Private keys
+*.pem
+
