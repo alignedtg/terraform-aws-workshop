@@ -12,7 +12,7 @@ module "ec2-instance" {
   version       = "4.3.0"
   name          = "devopsdays-workshop-instance"
   ami           = data.aws_ami.amazon_linux_2.id
-  instance_type = "t2.micro"
+  instance_type = var.instance_type
 
   availability_zone           = element(module.vpc.azs, 0)
   subnet_id                   = element(module.vpc.public_subnets, 0)
@@ -20,14 +20,7 @@ module "ec2-instance" {
   associate_public_ip_address = true
   key_name                    = aws_key_pair.instance_key_pair.key_name
 
-  user_data = <<-EOT
-  #!/bin/bash
-  yum update -y
-  yum install -y httpd
-  systemctl start httpd
-  systemctl enable httpd
-  echo "<h1>Hello DevOpsDays Raleigh from $(hostname -f)</h1>" > /var/www/html/index.html
-  EOT
+  user_data = file("${path.module}/user_data.sh")
 
   tags = {
     Name = "devopsdays-workshop-instance"
